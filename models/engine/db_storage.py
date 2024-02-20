@@ -59,7 +59,7 @@ class DBStorage:
                     {row.id}': row for row in rows}
         else:
             # Query objects from all tables
-            classes = {"City": City, "State": State}
+            classes = {"City": City, "State": State, "User": User}
             all_rows = {}
 
             for key, cls in classes.items():
