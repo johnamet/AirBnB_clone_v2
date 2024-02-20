@@ -139,7 +139,7 @@ class HBNBCommand(cmd.Cmd):
 
         for key, value in cls_instance.items():
             setattr(new_instance, key, value)
-
+        storage.new(new_instance)
         storage.save()
         print(new_instance.id)
         storage.save()
@@ -224,11 +224,13 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
+            else:
+                cls = self.classes[args]
+            for k, v in storage.all(cls).items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 print_list.append(str(v))
 
         print(print_list)
@@ -339,4 +341,5 @@ class HBNBCommand(cmd.Cmd):
         print("Usage: update <className> <id> <attName> <attVal>\n")
 
 if __name__ == "__main__":
+    storage.reload()
     HBNBCommand().cmdloop()
