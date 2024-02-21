@@ -50,6 +50,9 @@ class DBStorage:
         """
         from models.city import City
         from models.state import State
+        from models.amenity import Amenity
+        from models.place import Place
+        from models.user import User
         
         if cls is not None:
             # Query objects of a specific class
@@ -59,7 +62,9 @@ class DBStorage:
                     {row.id}': row for row in rows}
         else:
             # Query objects from all tables
-            classes = {"City": City, "State": State, "User": User}
+            classes = {"City": City, "State": State,
+                       "User": User, 'Place': Place,
+                       "Amenity": Amenity,}
             all_rows = {}
 
             for key, cls in classes.items():
