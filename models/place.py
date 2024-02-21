@@ -4,6 +4,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer,\
     ForeignKey, Float, Table
 from sqlalchemy.orm import relationship
+from models import type_storage
 
 
 place_amenity = Table('place_amenity', Base.metadata,
@@ -26,32 +27,31 @@ class Place(BaseModel, Base):
     # For DBStorage
     reviews = relationship('Review', backref='place',
                            cascade='all, delete-orphan')
-    amenities = relationship('Amenity', secondary=place_amenity,
-                             viewonly=False)
+    
+    if type_storage == 'db':
+        amenities = relationship('Amenity', secondary=place_amenity,
+                               viewonly=False)
+    else:
+        # For FileStorage
+        @property
+        def reviews(self):
+            import models
+            from models.review import Review
 
-    # For FileStorage
-    def __init__(self):
-        self.reviews = []
-        self.amenities = []
+            return [review for review in
+                    models.storage.all(Review).values()
+                    if review.place_id == self.id]
 
-    @property
-    def reviews(self):
-        import models
-        from models.review import Review
+        @reviews.setter
+        def reviews(self, value):
+            self.review = value
 
-        return [review for review in
-                models.storage.all(Review).values()
-                if review.place_id == self.id]
+        @property
+        def amenities(self):
+            return self.amenities
 
-    @reviews.setter
-    def reviews(self, value):
-        self.review = value
-
-    @property
-    def amenities(self):
-        return self.amenities
-
-    @amenities.setter
-    def amenities(self, value):
-        if isinstance(value, Amenity):
-            self.amenities.append(value.id)
+        @amenities.setter
+        def amenities(self, value):
+            from models import Amenity
+            if isinstance(value, Amenity):
+                self.amenities.append(value.id)
