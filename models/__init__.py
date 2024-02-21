@@ -2,6 +2,7 @@
 """Initialize the storage engine based on environment variable"""
 
 from os import environ
+
 from models.engine.db_storage import DBStorage
 from models.engine.file_storage import FileStorage
 
