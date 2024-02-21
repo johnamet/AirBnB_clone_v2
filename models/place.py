@@ -18,20 +18,19 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, nullable=False, default=0)
     latitude = Column(Float)
     longitude = Column(Float)
-    
     # For DBStorage
     reviews = relationship('Review', backref='place',
                            cascade='all, delete-orphan')
 
-    #For FileStorage
+    # For FileStorage
     def __init__(self):
         self.reviews = []
 
     @property
     def reviews(self):
-        import models.storage
+        import models
+        from models.review import Review
 
-
-        return [review for review in\
-                models.storage.all(Review).values\
+        return [review for review in
+                models.storage.all(Review).values
                 if review.place_id == self.id]
