@@ -32,5 +32,9 @@ class Place(BaseModel, Base):
         from models.review import Review
 
         return [review for review in
-                models.storage.all(Review).values
+                models.storage.all(Review).values()
                 if review.place_id == self.id]
+
+    @reviews.setter
+    def reviews(self, value):
+        self.review = value
