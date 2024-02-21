@@ -50,6 +50,7 @@ class DBStorage:
         Returns:
             dict: A dictionary containing queried objects.
         """
+        # Import required models to avoid circular imports
         from models.city import City
         from models.state import State
         from models.amenity import Amenity
@@ -60,20 +61,18 @@ class DBStorage:
             # Query objects of a specific class
             query = self.__session.query(cls)
             rows = query.all()
-            return {f'{row.to_dict()["__class__"]}.\
-                    {row.id}': row for row in rows}
+            return {f'{row.to_dict()["__class__"]}.{row.id}': row for row in rows}
         else:
             # Query objects from all tables
             classes = {"City": City, "State": State,
                        "User": User, 'Place': Place,
-                       "Amenity": Amenity, }
+                       "Amenity": Amenity}
             all_rows = {}
 
             for key, cls in classes.items():
                 result = self.__session.query(cls)
                 rows = result.all()
-                all_rows.update({f'{key}.\
-                                 {row.id}': row for row in rows})
+                all_rows.update({f'{key}.{row.id}': row for row in rows})
 
             return all_rows
 
@@ -114,3 +113,7 @@ class DBStorage:
         session_factory = sessionmaker(bind=self.__engine)
         Session = scoped_session(session_factory)
         self.__session = Session()
+
+# Instantiate the storage engine
+storage = DBStorage()
+storage.reload()
