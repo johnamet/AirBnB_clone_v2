@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 """ """
-from models.base_model import BaseModel
-import unittest
 import datetime
-from uuid import UUID
 import json
 import os
+import unittest
+
+from models.base_model import BaseModel
 
 
 class test_basemodel(unittest.TestCase):
@@ -60,7 +60,7 @@ class test_basemodel(unittest.TestCase):
         """ """
         i = self.value()
         self.assertEqual(str(i), '[{}] ({}) {}'.format(self.name, i.id,
-                         i.__dict__))
+                                                       i.__dict__))
 
     def test_todict(self):
         """ """

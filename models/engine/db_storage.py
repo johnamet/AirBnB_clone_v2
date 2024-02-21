@@ -3,10 +3,12 @@
 This module defines a storage engine using MySQL database.
 """
 
-from sqlalchemy import create_engine, MetaData, Table
-from sqlalchemy.orm import sessionmaker, scoped_session
-from models.base_model import Base
 from os import environ
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
+
+from models.base_model import Base
 
 
 class DBStorage:
@@ -53,7 +55,7 @@ class DBStorage:
         from models.amenity import Amenity
         from models.place import Place
         from models.user import User
-        
+
         if cls is not None:
             # Query objects of a specific class
             query = self.__session.query(cls)
@@ -64,7 +66,7 @@ class DBStorage:
             # Query objects from all tables
             classes = {"City": City, "State": State,
                        "User": User, 'Place': Place,
-                       "Amenity": Amenity,}
+                       "Amenity": Amenity, }
             all_rows = {}
 
             for key, cls in classes.items():
