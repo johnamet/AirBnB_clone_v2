@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import os
 import http.server
 import socketserver
@@ -60,7 +61,7 @@ def do_deploy(archive_path):
         run('ln -s /data/web_static/releases/{}/ /data/web_static/current'.format(folder_name))
 
         print("New version deployed!")
-        update_symbolic_link(os.path.basename(archive_path))
+        update_symbolic_link(os.path.basename('/data/web_static/releases/{}/'.format(folder_name)))
         expose_index_thread = threading.Thread(target=expose_index_locally)
         expose_index_thread.start()
 
