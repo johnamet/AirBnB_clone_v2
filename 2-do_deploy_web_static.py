@@ -11,7 +11,7 @@ env.key_filename = '~/.ssh/id_rsa'
 
 
 def expose_index_locally():
-    os.chdir("path/to/your/web_static_folder")  # Change directory to your web_static folder
+    os.chdir("/data/web_static/current")  # Change directory to your web_static folder
     Handler = http.server.SimpleHTTPRequestHandler
     with socketserver.TCPServer(("localhost", 8000), Handler) as httpd:
         print("Server started at http://localhost:8000/")
@@ -21,10 +21,10 @@ def expose_index_locally():
 def update_symbolic_link(archive_filename):
     try:
         # Remove existing current symbolic link
-        os.remove("path/to/your/web_static_folder/current")
+        os.remove("/data/web_static/current")
 
         # Create new symbolic link pointing to the new archive version
-        os.symlink(archive_filename, "path/to/your/web_static_folder/current")
+        os.symlink(archive_filename, "/data/web_static/current")
         print(f"Symbolic link updated to {archive_filename}")
     except Exception as e:
         print(f"Failed to update symbolic link: {e}")
