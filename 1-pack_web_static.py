@@ -1,31 +1,28 @@
 #!/usr/bin/python3
+from fabric import task
 from datetime import datetime
-from fabric.api import local
+import os
 
+@task
+def do_pack(c):
+    """Packs contents of web_static into a .tgz archive."""
+    time_format = "%Y%m%d%H%M%S"
+    now = datetime.utcnow().strftime(time_format)
+    archive_name = "web_static_{}.tgz".format(now)
+    folder_path = "versions"
 
-def do_pack():
-    """Generates a .tgz archive of the web_static directory.
+    # Create the versions folder if it doesn't exist
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
 
-  Returns:
-      str: The path to the generated archive or None on failure.
-  """
-    now = datetime.now()
-    timestamp = now.strftime("%Y%m%d%H%M%S")
-    archive_name = f"web_static_{timestamp}.tgz"
-    archive_path = f"versions/{archive_name}"
+    # Command to create the .tgz archive
+    tar_command = "tar -cvzf {}/{} web_static".format(folder_path, archive_name)
 
-    # Create versions directory if it doesn't exist
-    local("mkdir -p versions")
+    # Run the tar command
+    result = c.local(tar_command)
 
-    # Create archive using tar
-    try:
-        local(f"tar -czf {archive_path} web_static")
-        return archive_path
-    except Exception:
-        print("Error creating archive. Please check permissions.")
+    # Check if the command executed successfully
+    if result.failed:
         return None
-
-# Example usage (uncomment to run locally)
-# archive_path = do_pack()
-# if archive_path:
-#   print(f"Archive created successfully: {archive_path}")
+    else:
+        return os.path.join(folder_path, archive_name)
