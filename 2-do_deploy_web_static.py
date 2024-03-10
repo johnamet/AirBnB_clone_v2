@@ -12,7 +12,7 @@ def do_deploy(archive_path):
     """
     # verificamos si el path existe
     if os.path.exists(archive_path) is False:
-        return (False)
+        return False
     try:
         put(archive_path, '/tmp/')
         _filename = archive_path.split("/")[-1]
