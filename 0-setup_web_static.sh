@@ -47,18 +47,11 @@ ln -sfn "$source_path" "$destination_path"
 # Grant ownership of data to ubuntu
 sudo chown -R ubuntu:ubuntu /data/
 
-# Create a new Nginx configuration file for serving hbnb_static
-echo "server {
-    listen 80;
-    server_name nnoboa.tech;
-
-    location /hbnb_static/ {
-        alias /data/web_static/current/;
-    }
-}" | sudo tee /etc/nginx/sites-available/nnoboa_static
+# Update the cofig file to serve hbnb_static
+sudo sed -i '/server_name _;/a \ \n\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}' /etc/nginx/sites-available/default
 
 # Create a symbolic link to enable the configuration
-sudo ln -s /etc/nginx/sites-available/nnoboa_static /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
 
 # Test Nginx configuration
 sudo nginx -t
