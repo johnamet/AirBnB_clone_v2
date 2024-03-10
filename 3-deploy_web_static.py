@@ -9,7 +9,7 @@ from datetime import datetime
 from fabric.api import env, local, run, put
 
 # Define the web server IPs
-env.hosts = ["54.237.24.16 web-01", "100.26.227.61 web-02"]
+env.hosts = ["54.237.24.16", "100.26.227.61"]
 
 
 def do_pack():

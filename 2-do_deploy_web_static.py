@@ -3,9 +3,9 @@ from datetime import datetime
 
 from os.path import exists
 
-env.hosts = ["54.237.24.16 web-01", "100.26.227.61 web-02"]
+env.hosts = ["54.237.24.16", "100.26.227.61"]
 env.user = "ubuntu"
-env.key_filename = './.ssh/id_rsa'
+env.key_filename = '~/.ssh/id_rsa'
 
 
 def do_deploy(archive_path):
