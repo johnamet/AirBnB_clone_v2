@@ -1,127 +1,28 @@
-# Install Nginx package if not already installed
-package { 'nginx':
-  ensure => installed,
+# puppet manifest preparing a server for static content deployment
+exec { 'Update server':
+  command => '/usr/bin/env apt-get -y update',
 }
-
-# Define necessary directories
-$dirs = ['/data/', '/data/web_static', '/data/web_static/releases/', '/data/web_static/shared',
-  '/data/web_static/releases/test/']
-
-# Create directories if they don't exist
-$dirs.each |$dir| {
-  file { $dir:
-    ensure => directory,
-    owner  => 'ubuntu',
-    group  => 'ubuntu',
-    mode   => '0755',
-  }
+-> exec {'Install NGINX':
+  command => '/usr/bin/env apt-get -y install nginx',
 }
-
-# Create a fake HTML file with updated content
-file { '/data/web_static/releases/test/index.html':
-  ensure  => present,
-  content => '<html>
-  <head>
-  </head>
-  <body>
-    Holberton School
-  </body>
-</html>',
-  owner   => 'ubuntu',
-  group   => 'ubuntu',
-  mode    => '0644',
+-> exec {'Creates directory release/test':
+  command => '/usr/bin/env mkdir -p /data/web_static/releases/test/',
 }
-
-# Create symbolic link
-file { '/data/web_static/current':
-  ensure => link,
-  target => '/data/web_static/releases/test',
+-> exec {'Creates directories shared':
+  command => '/usr/bin/env mkdir -p /data/web_static/shared/',
 }
-
-# Update Nginx configuration
-file_line { 'hbnb_static_config':
-  ensure  => present,
-  path    => '/etc/nginx/sites-available/default',
-  line    => 'location /hbnb_static/ { alias /data/web_static/current/; }',
-  match   => '^(\s*server_name\s+\w+;$)',
-  before  => '}',
-  require => Package['nginx'],
+-> exec {'Write Hello World in index with tee command':
+  command => '/usr/bin/env echo "Hello Wolrd Puppet" | sudo tee /data/web_static/releases/test/index.html',
 }
-
-# Reload Nginx service after updating configuration
-service { 'nginx':
-  ensure  => running,
-  enable  => true,
-  require => File_line['hbnb_static_config'],
+-> exec {'Create Symbolic link':
+  command => '/usr/bin/env ln -sf /data/web_static/releases/test /data/web_static/current',
 }
-
-# File: site.pp (or any other Puppet manifest file)
-
-# Install Nginx package
-package { 'nginx':
-  ensure => installed,
+-> exec {'Change owner and group like ubuntu':
+  command => '/usr/bin/env chown -R ubuntu:ubuntu /data',
 }
-
-# Create necessary directories
-$dirs = [
-  '/data/',
-  '/data/web_static',
-  '/data/web_static/releases/',
-  '/data/web_static/shared',
-  '/data/web_static/releases/test/',
-]
-
-file { $dirs:
-  ensure => directory,
-  owner  => 'ubuntu',
-  group  => 'ubuntu',
-  mode   => '0755',
+-> exec {'Add new configuration to NGINX':
+  command => '/usr/bin/env sed -i "/listen 80 default_server;/a location /hbnb_static/ { alias /data/web_static/current/;}" /etc/nginx/sites-available/default',
 }
-
-# Create a fake HTML file with updated content
-file { '/data/web_static/releases/test/index.html':
-  ensure  => present,
-  content => '<html>
-  <head>
-  </head>
-  <body>
-    Holberton School
-  </body>
-</html>',
-  owner   => 'ubuntu',
-  group   => 'ubuntu',
-  mode    => '0644',
-}
-
-
-# Create symbolic link
-file { '/data/web_static/current':
-  ensure => link,
-  target => '/data/web_static/releases/test',
-  force  => true,
-}
-
-# Configure Nginx to serve hbnb_static
-file { '/etc/nginx/sites-available/default':
-  content => template('my_module/nginx_config.erb'),
-}
-
-# Enable the configuration
-file { '/etc/nginx/sites-enabled/default':
-  ensure => link,
-  target => '/etc/nginx/sites-available/default',
-}
-
-# Test Nginx configuration
-exec { 'nginx-config-test':
-  command => 'nginx -t',
-  path    => '/usr/sbin:/usr/bin:/sbin:/bin',
-  onlyif  => 'nginx -t',
-}
-
-# Reload Nginx if configuration test passes
-service { 'nginx':
-  ensure  => running,
-  enable  => true,
-  require => Exec['nginx-config-test'],
+-> exec {'Restart NGINX':
+  command => '/usr/bin/env service nginx restart',
 }
