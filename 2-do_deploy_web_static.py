@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 from fabric.api import run, env, put, sudo
+import os
 
 # Define the web server IPs
 env.hosts = ["54.237.24.16 web-01", "100.26.227.61 web-02"]
+
 
 def do_deploy(archive_path):
     """
@@ -10,7 +12,7 @@ def do_deploy(archive_path):
     """
     # verificamos si el path existe
     if os.path.exists(archive_path) is False:
-        return(False)
+        return (False)
     try:
         put(archive_path, '/tmp/')
         _filename = archive_path.split("/")[-1]
@@ -26,6 +28,6 @@ def do_deploy(archive_path):
         run('rm -rf /data/web_static/current')
         run('ln -s /data/web_static/releases/{} /data/web_static/current'
             .format(filename))
-        return(True)
-    except:
-        return(False)
+        return True
+    except Exception:
+        return False
