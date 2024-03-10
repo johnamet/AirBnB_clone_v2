@@ -1,59 +1,50 @@
-#!/usr/bin/python3
-"""Script (based on the file 1-pack_web_static.py) that distributes an
-archive to your web servers, using the function do_deploy.
-"""
-from fabric.context_managers import cd, hide,\
-        settings, show, path, prefix, lcd, quiet, warn_only,\
-        remote_tunnel, shell_env
-from fabric.decorators import hosts, roles,\
-        runs_once, with_settings, task, serial, parallel
-from fabric.operations import require, prompt,\
-        put, get, run, sudo, local, reboot, open_shell
-from fabric.state import env, output
-from fabric.utils import abort, warn, puts, fastprint
-from fabric.tasks import execute
+from fabric.api import env, run, put
 from datetime import datetime
-import os
+
+from os.path import exists
 
 env.hosts = ["54.237.24.16 web-01", "100.26.227.61 web-02"]
-env.user = 'ubuntu'
-
-
-def do_pack():
-    """ function generates a tgz archive from the contents of
-    the web_static folder of the AirBnB clone
-    """
-    try:
-        my_time = datetime.now().strftime('%Y%m%d%H%M%S')
-        local("mkdir -p versions")
-        my_file = 'versions/web_static_' + my_time + '.tgz'
-        local('tar -vzcf {} web_static'.format(my_file))
-        return (my_file)
-    except Exception:
-        return None
+env.user = "ubuntu"
+env.key_filename = './.ssh/id_rsa'
 
 
 def do_deploy(archive_path):
-    """ function distrubtes an archive to my web servers
-    """
-    path_existence = os.path.exists(archive_path)
-    if path_existence is False:
+    if not exists(archive_path):
         return False
+
     try:
-        path_split = archive_path.replace('/', ' ').replace('.', ' ').split()
-        just_directory = path_split[0]
-        no_tgz_name = path_split[1]
-        full_filename = path_split[1] + '.' + path_split[2]
-        folder = '/data/web_static/releases/{}/'.format(no_tgz_name)
-        put(archive_path, '/tmp/')
-        run('mkdir -p {}'.format(folder))
-        run('tar -xzf /tmp/{} -C {}/'.format(full_filename, folder))
-        run('rm /tmp/{}'.format(full_filename))
-        run('mv {}/web_static/* {}'.format(folder, folder))
-        run('rm -rf {}/web_static'.format(folder))
-        current = '/data/web_static/current'
-        run('rm -rf {}'.format(current))
-        run('ln -s {}/ {}'.format(folder, current))
+        archive_name = archive_path.split('/')[-1]
+        folder_name = archive_name.split('.')[0]
+
+        # Upload the archive to /tmp directory on the web servers
+        put(archive_path, '/tmp/{}'.format(archive_name))
+
+        # Uncompress the archive to /data/web_static/releases/<archive filename without extension>
+        run('mkdir -p /data/web_static/releases/{}/'.format(folder_name))
+        run('tar -xzf /tmp/{} -C /data/web_static/releases/{}/'.format(archive_name, folder_name))
+
+        # Remove the archive from the web servers
+        run('rm /tmp/{}'.format(archive_name))
+
+        # Move contents of web_static/ to new folder and remove original folder
+        run('mv /data/web_static/releases/{}/web_static/* /data/web_static/releases/{}/'.format(folder_name,
+                                                                                                folder_name))
+        run('rm -rf /data/web_static/releases/{}/web_static'.format(folder_name))
+
+        # Delete the symbolic link /data/web_static/current
+        run('rm -rf /data/web_static/current')
+
+        # Create a new symbolic link /data/web_static/current
+        run('ln -s /data/web_static/releases/{}/ /data/web_static/current'.format(folder_name))
+
+        print("New version deployed!")
         return True
-    except Exception:
+    except Exception as e:
+        print("Deployment failed: {}".format(e))
         return False
+# def deploy():
+#     archive_path = 'versions/web_static_{}.tgz'.format(datetime.now().strftime('%Y%m%d%H%M%S'))
+#     if not do_pack():
+#         print("Failed to create archive.")
+#         return False
+#     return do_deploy(archive_path)
