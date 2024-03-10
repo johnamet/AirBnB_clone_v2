@@ -12,6 +12,18 @@ env.key_filename = '~/.ssh/id_rsa'
 
 
 def expose_index_locally():
+    """
+  Exposes the index file locally using a Python HTTP server.
+
+  This function serves files from the /data/web_static/current directory
+  and exposes them locally on port 8000.
+
+  Example:
+      To expose the index file, call expose_index_locally().
+
+  Returns:
+      None
+  """
     os.chdir("/data/web_static/current")  # Change directory to your web_static folder
     Handler = http.server.SimpleHTTPRequestHandler
     with socketserver.TCPServer(("localhost", 8000), Handler) as httpd:
@@ -20,6 +32,21 @@ def expose_index_locally():
 
 
 def update_symbolic_link(archive_filename):
+    """
+  Updates the symbolic link to point to the new archive version.
+
+  This function removes the existing /data/web_static/current symbolic link
+  and creates a new symbolic link pointing to the provided archive filename.
+
+  Args:
+      archive_filename (str): The filename of the new archive.
+
+  Example:
+      To update the symbolic link, call update_symbolic_link('web_static_20240310120000.tgz').
+
+  Returns:
+      None
+  """
     try:
         # Remove existing current symbolic link
         os.remove("/data/web_static/current")
@@ -32,6 +59,22 @@ def update_symbolic_link(archive_filename):
 
 
 def do_deploy(archive_path):
+    """
+  Deploys the archive to the web servers and updates the symbolic link.
+
+  This function uploads the specified archive to the remote web servers,
+  extracts its contents, moves them to the appropriate directory, and
+  updates the symbolic link to point to the new version.
+
+  Args:
+      archive_path (str): The path to the archive to be deployed.
+
+  Example:
+      To deploy an archive, call do_deploy('/path/to/your/archive.tgz').
+
+  Returns:
+      bool: True if the deployment was successful, False otherwise.
+  """
     if not os.path.exists(archive_path):
         return False
 
@@ -61,21 +104,11 @@ def do_deploy(archive_path):
         run('ln -s /data/web_static/releases/{}/ /data/web_static/current'.format(folder_name))
 
         print("New version deployed!")
-        update_symbolic_link(os.path.basename('/data/web_static/releases/{}/'.format(folder_name)))
-        expose_index_thread = threading.Thread(target=expose_index_locally)
-        expose_index_thread.start()
+        # update_symbolic_link(os.path.basename('/data/web_static/releases/{}/'.format(folder_name)))
+        # expose_index_thread = threading.Thread(target=expose_index_locally)
+        # expose_index_thread.start()
 
         return True
     except Exception as e:
         print("Deployment failed: {}".format(e))
         return False
-
-#
-# if __name__ == "__main__":
-#     # Expose 0-index.html and my-index.html locally
-#     expose_index_thread = threading.Thread(target=expose_index_locally)
-#     expose_index_thread.start()
-#
-#     # Deploy the archive and update symbolic link
-#     archive_path = 'path/to/your/archive.tgz'  # Replace with the path to your archive
-#     do_deploy(archive_path)
