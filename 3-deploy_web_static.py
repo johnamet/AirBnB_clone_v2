@@ -3,9 +3,10 @@
 Fabric script (based on the file 2-do_deploy_web_static.py)
 """
 
-from fabric.api import env, local, run
-from datetime import datetime
 import os
+from datetime import datetime
+
+from fabric.api import env, local, run, put
 
 # Define the web server IPs
 env.hosts = ["54.237.24.16 web-01", "100.26.227.61 web-02"]
