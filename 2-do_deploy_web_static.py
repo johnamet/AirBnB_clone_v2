@@ -7,7 +7,7 @@ from datetime import datetime
 
 env.hosts = ["54.237.24.16", "100.26.227.61"]
 env.user = "ubuntu"
-env.key_filename = 'my_ssh_private_key'
+env.key_filename = '~/.ssh/id_rsa'
 
 
 def expose_index_locally():
