@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from fabric.api import env, run, local
 
-env.hosts = ["<IP web-01>", "<IP web-02>"]
+env.hosts = ["54.237.24.16", "100.26.227.61"]
 env.user = "ubuntu"
 env.key_filename = "~/.ssh/id_rsa"
 
