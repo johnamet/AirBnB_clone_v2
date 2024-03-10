@@ -64,8 +64,8 @@ sudo ln -s /etc/nginx/sites-available/nnoboa_static /etc/nginx/sites-enabled/
 sudo nginx -t
 
 # If the configuration test is successful, reload Nginx to apply changes
-if [ $? -eq 0 ]; then
-    sudo systemctl reload nginx
+if nginx -t; then
+    sudo service nginx reload
     echo "Nginx configuration reloaded successfully."
 else
     echo "Nginx configuration test failed. Please check the configuration file."
