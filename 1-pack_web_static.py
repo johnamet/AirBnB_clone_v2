@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+fab -f 1-pack_web_static.py do_pack #!/usr/bin/python3
 from datetime import datetime
 from fabric.api import local
 
