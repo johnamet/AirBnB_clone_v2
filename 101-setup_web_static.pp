@@ -1,28 +1,74 @@
-# puppet manifest preparing a server for static content deployment
-exec { 'Update server':
-  command => '/usr/bin/env apt-get -y update',
+# Script that configures Nginx servers with puppet
+
+exec {'update':
+  provider => shell,
+  command  => 'sudo apt-get -y update',
+} ->
+
+exec {'install Nginx':
+  provider => shell,
+  command  => 'sudo apt-get -y install nginx',
+} ->
+
+file { '/data':
+  ensure => 'directory',
+} ->
+
+file { '/data/web_static':
+  ensure => 'directory',
+} ->
+
+file { '/data/web_static/releases':
+  ensure => 'directory',
+} ->
+
+file { '/data/web_static/releases/test':
+  ensure => 'directory',
+} ->
+
+file { '/data/web_static/shared':
+  ensure => 'directory',
+} ->
+
+file { '/data/web_static/releases/test/index.html':
+  ensure  => 'present',
+  content => "Holberton School Puppet\n",
+} ->
+
+file { '/data/web_static/current':
+  ensure => 'link',
+  target => '/data/web_static/releases/test',
+} ->
+
+exec { 'chown -R ubuntu:ubuntu /data/':
+  path => '/usr/bin/:/usr/local/bin/:/bin/',
 }
--> exec {'Install NGINX':
-  command => '/usr/bin/env apt-get -y install nginx',
-}
--> exec {'Creates directory release/test':
-  command => '/usr/bin/env mkdir -p /data/web_static/releases/test/',
-}
--> exec {'Creates directories shared':
-  command => '/usr/bin/env mkdir -p /data/web_static/shared/',
-}
--> exec {'Write Hello World in index with tee command':
-  command => '/usr/bin/env echo "Hello Wolrd Puppet" | sudo tee /data/web_static/releases/test/index.html',
-}
--> exec {'Create Symbolic link':
-  command => '/usr/bin/env ln -sf /data/web_static/releases/test /data/web_static/current',
-}
--> exec {'Change owner and group like ubuntu':
-  command => '/usr/bin/env chown -R ubuntu:ubuntu /data',
-}
--> exec {'Add new configuration to NGINX':
-  command => '/usr/bin/env sed -i "/listen 80 default_server;/a location /hbnb_static/ { alias /data/web_static/current/;}" /etc/nginx/sites-available/default',
-}
--> exec {'Restart NGINX':
-  command => '/usr/bin/env service nginx restart',
+
+file { '/var/www':
+  ensure => 'directory'
+} ->
+
+file { '/var/www/html':
+  ensure => 'directory'
+} ->
+
+file { '/var/www/html/index.html':
+  ensure  => 'present',
+  content => "Hello World!"
+} ->
+
+file { '/var/www/html/404.html':
+  ensure  => 'present',
+  content => "Ceci n'est pas une page"
+} ->
+
+exec {'add location block':
+  onlyif   => 'test -f /etc/nginx/sites-available/default',
+  provider => shell,
+  command  => 'sudo sed -i \'41i\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n\t}\n\' /etc/nginx/sites-available/default',
+} ->
+
+exec {'restart Nginx':
+  provider => shell,
+  command  => 'sudo service nginx restart',
 }

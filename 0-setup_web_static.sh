@@ -12,7 +12,7 @@ else
 	sudo apt-get install -y "$nginx"
 fi
 
-# make a list of neccessary folders
+# make a list of necessary folders
 dirs_=("/data/" "/data/web_static" "/data/web_static/releases/" "/data/web_static/shared" "/data/web_static/releases/test/")
 
 # iterate through the dirs_ to check if each dir exists
@@ -47,7 +47,7 @@ ln -sfn "$source_path" "$destination_path"
 # Grant ownership of data to ubuntu
 sudo chown -R ubuntu:ubuntu /data/
 
-# Update the cofig file to serve hbnb_static
+# Update the config file to serve hbnb_static
 sudo sed -i '/server_name _;/a \ \n\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}' /etc/nginx/sites-available/default
 
 # Create a symbolic link to enable the configuration
