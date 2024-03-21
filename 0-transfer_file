@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# The script transfers file from client side to server side
+
+if [ $# -lt 4 ]; then
+	echo "Usage: $0 PATH_TO_FILE IP USERNAME PATH_TO_SSH_KEY"
+	exit 1
+fi
+
+# Path to the file to transfered
+FILE=$1
+
+# The IP of the server
+IP=$2
+
+#The username the scp connects with
+USERNAME=$3
+
+# The path to the ssh private key that scp uses
+SSH_KEY=$4
+
+scp -o StrictHostKeyChecking=no -i $SSH_KEY $FILE $USERNAME@$IP:~/

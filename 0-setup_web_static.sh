@@ -12,7 +12,7 @@ else
 	sudo apt-get install -y "$nginx"
 fi
 
-# make a list of necessary folders
+# make a list of neccessary folders
 dirs_=("/data/" "/data/web_static" "/data/web_static/releases/" "/data/web_static/shared" "/data/web_static/releases/test/")
 
 # iterate through the dirs_ to check if each dir exists
@@ -42,16 +42,33 @@ fi
 
 # Create the new symbolic link
 echo "Creating symbolic link: $destination_path -> $source_path"
+# Create the new symbolic link
+echo "Creating symbolic link: $destination_path -> $source_path"
+
+# Check if the symbolic link already exists
+if [ -L "$destination_path" ]; then
+    echo "Symbolic link already exists. Deleting..."
+    rm "$destination_path"
+fi
+
+# Create the new symbolic link
 ln -sfn "$source_path" "$destination_path"
 
 # Grant ownership of data to ubuntu
 sudo chown -R ubuntu:ubuntu /data/
 
-# Update the config file to serve hbnb_static
-sudo sed -i '/server_name _;/a \ \n\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t}' /etc/nginx/sites-available/default
+# Create a new Nginx configuration file for serving hbnb_static
+echo "server {
+    listen 80;
+    server_name nnoboa.tech;
+
+    location /hbnb_static/ {
+        alias /data/web_static/current/;
+    }
+}" | sudo tee /etc/nginx/sites-available/nnoboa_static
 
 # Create a symbolic link to enable the configuration
-sudo ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/nnoboa_static /etc/nginx/sites-enabled/
 
 # Test Nginx configuration
 sudo nginx -t
