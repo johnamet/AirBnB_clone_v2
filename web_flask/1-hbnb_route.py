@@ -1,5 +1,9 @@
 #!/usr/bin/python3
-# Sample minimal flask app
+"""
+Sample minimal flask app
+"""
+
+
 from flask import Flask
 
 
