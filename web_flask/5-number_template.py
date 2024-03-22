@@ -4,7 +4,7 @@ Sample minimal flask app
 """
 
 
-from flask import Flask
+from flask import Flask, render_template
 from markupsafe import escape
 
 app = Flask(__name__)
@@ -60,9 +60,7 @@ def is_number_template(n):
     """
 
     if type(n) == int:
-        return f"<!DOCTYPE html> <HTML lang='en'>\
-                <HEAD><TITLE>HBNB</TITLE><BODY>\
-                <H1>Number: {n}</H1></BODY></HTML>"
+        return render_template('5-number.html', n=n)
 
 
 if __name__ == "__main__":
