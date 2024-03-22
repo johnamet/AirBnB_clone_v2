@@ -1,3 +1,9 @@
+#!/usr/bin/python3
+"""
+This module contains the State class
+"""
+
+
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 
