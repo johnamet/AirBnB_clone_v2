@@ -40,7 +40,8 @@ class BaseModel(Base):
         for key, value in kwargs.items():
             if key in ['created_at', 'updated_at']:
                 value = datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f')
-            setattr(self, key, value)
+            if key != '_sa_instance_state':
+                setattr(self, key, value)
 
     def __str__(self):
         """

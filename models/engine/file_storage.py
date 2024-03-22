@@ -48,7 +48,6 @@ class FileStorage:
                     'Review': Review
                 }
                 for key, val in temp.items():
-                    print(f"key: {key} value: {val}")
                     class_name = val['__class__']
                     class_instance = classes[class_name]
                     val['__class__'] = class_instance
@@ -69,4 +68,4 @@ class FileStorage:
         """
         Deserializing the JSON file to objects
         """
-        reload()
+        self.reload()
