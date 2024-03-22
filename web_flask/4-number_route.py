@@ -37,10 +37,13 @@ def default_python_cool():
     return f"Python {default}"
 
 
-@app.route("/number/<n>", strict_slashes=False)
+@app.route("/number/<int:n>", strict_slashes=False)
 def is_number(n):
     """
-    route to a number
+    displays n if n is an integer
+
+    Returns:
+        str: if a n is a number
     """
     if n.isdigit():
         return f"{escape(n)} is a number"
