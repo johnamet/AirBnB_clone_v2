@@ -23,11 +23,12 @@ class DBStorage:
         """
         Initializes the database engine.
         """
-        # Retrieve MySQL database credentials from environment variables
-        __user = environ['HBNB_MYSQL_USER']
-        __password = environ['HBNB_MYSQL_PWD']
-        __database = environ['HBNB_MYSQL_DB']
-        __host = environ['HBNB_MYSQL_HOST']
+        if environ['HBNB_TYPE_STORAGE'] == 'db':
+            # Retrieve MySQL database credentials from environment variables
+            __user = environ['HBNB_MYSQL_USER']
+            __password = environ['HBNB_MYSQL_PWD']
+            __database = environ['HBNB_MYSQL_DB']
+            __host = environ['HBNB_MYSQL_HOST']
 
         # Create the engine
         self.__engine = create_engine(
@@ -113,6 +114,10 @@ class DBStorage:
         session_factory = sessionmaker(bind=self.__engine)
         Session = scoped_session(session_factory)
         self.__session = Session()
+
+    def close(self):
+        self.__session.remove()
+
 
 # Instantiate the storage engine
 storage = DBStorage()

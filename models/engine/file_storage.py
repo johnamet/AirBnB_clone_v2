@@ -47,8 +47,11 @@ class FileStorage:
                     'Review': Review
                 }
                 for key, val in temp.items():
+                    print(f"key: {key} value: {val}")
                     class_name = val['__class__']
-                    self.__objects[key] = classes[class_name](**val)
+                    class_instance = classes[class_name]
+                    val['__class__'] = class_instance
+                    self.__objects[key] = class_instance(**val)
         except FileNotFoundError:
             pass
 
@@ -60,3 +63,9 @@ class FileStorage:
         if obj:
             key = f"{obj.__class__.__name__}.{obj.id}"
             del self.__objects[key]
+
+    def close(self):
+        """
+        Deserializing the JSON file to objects
+        """
+        reload()
