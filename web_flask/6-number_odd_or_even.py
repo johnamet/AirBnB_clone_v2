@@ -70,7 +70,7 @@ def odd_even(n):
     """
 
     if type(n) == int:
-        if n%2 == 0:
+        if n % 2 == 0:
             even = 1
         else:
             even = 0
