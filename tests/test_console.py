@@ -1,7 +1,9 @@
 import unittest
-from unittest.mock import patch, MagicMock
 from io import StringIO
+from unittest.mock import patch
+
 from console import HBNBCommand
+
 
 class TestHBNBCommand(unittest.TestCase):
 
@@ -21,6 +23,6 @@ class TestHBNBCommand(unittest.TestCase):
         console = HBNBCommand()
         console.oncecmd('create BaseModel name=test_model')
 
+
 if __name__ == "__main__":
     unittest.main()
-

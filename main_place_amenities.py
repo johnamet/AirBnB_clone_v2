@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """ Test link Many-To-Many Place <> Amenity
 """
-from models import storage
 from models import *
+from models import storage
 
 print(dir())
 # creation of a State
@@ -43,4 +43,3 @@ place_2.amenities.append(amenity_3)
 storage.save()
 
 print("OK")
-

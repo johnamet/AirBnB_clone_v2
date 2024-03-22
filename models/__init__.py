@@ -9,9 +9,11 @@ type_storage = environ['HBNB_TYPE_STORAGE']
 # Initialize the storage engine based on the type
 if type_storage == 'db':
     from models.engine.db_storage import DBStorage
+
     storage = DBStorage()
 else:
     from models.engine.file_storage import FileStorage
+
     storage = FileStorage()
 
 # Load data from the storage engine
@@ -19,6 +21,7 @@ storage.reload()
 
 # Specify which modules to import when using models.*
 __all__ = ['BaseModel', 'User', 'State', 'City', 'Amenity', 'Place', 'Review']
+
 # Import all models
 from models.base_model import BaseModel
 from models.user import User

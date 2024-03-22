@@ -7,9 +7,9 @@
     ex: fab -f 2-do_deploy_web_static.py do_deploy:archive_path=versions/we
         b_static_20240307104334.tgz -i ~/.ssh/id_rsa
 """
-from fabric.api import *
 import os
 
+from fabric.api import *
 
 env.hosts = ['', '18.233.66.83']
 env.user = "ubuntu"

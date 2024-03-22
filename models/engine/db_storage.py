@@ -62,7 +62,8 @@ class DBStorage:
             # Query objects of a specific class
             query = self.__session.query(cls)
             rows = query.all()
-            return {f'{row.to_dict()["__class__"]}.{row.id}': row for row in rows}
+            return {f'{row.to_dict()["__class__"]}\
+            .{row.id}': row for row in rows}
         else:
             # Query objects from all tables
             classes = {"City": City, "State": State,

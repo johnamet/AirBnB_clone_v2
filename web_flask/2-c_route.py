@@ -3,7 +3,6 @@
 Sample minimal flask app
 """
 
-
 from flask import Flask
 from markupsafe import escape
 

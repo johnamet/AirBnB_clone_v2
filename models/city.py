@@ -1,5 +1,7 @@
-from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey
+
+from models.base_model import BaseModel, Base
+
 
 class City(BaseModel, Base):
     """

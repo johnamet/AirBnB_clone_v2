@@ -3,9 +3,7 @@
 Sample minimal flask app
 """
 
-
 from flask import Flask
-
 
 app = Flask(__name__)
 app.config['SERVER_NAME'] = '0.0.0.0:5000'

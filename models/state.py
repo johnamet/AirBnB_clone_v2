@@ -20,7 +20,9 @@ class State(BaseModel, Base):
 
     if models.type_storage == "db":
         # For DBStorage
-        cities = relationship("City", backref="state", cascade="all, delete-orphan")
+        cities = relationship("City",
+                              backref="state",
+                              cascade="all, delete-orphan")
     else:
         # For filestorage
         @property
@@ -31,6 +33,8 @@ class State(BaseModel, Base):
             from models import City
 
             all_obj = models.storage.all(City)
-            my_cities = [city for _, city in all_obj.items() if city.state_id == self.id]
+            my_cities = [city for _, city
+                         in all_obj.items()
+                         if city.state_id == self.id]
 
             return my_cities

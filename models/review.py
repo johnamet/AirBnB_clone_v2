@@ -1,5 +1,7 @@
 from sqlalchemy import Column, String, ForeignKey
+
 from models.base_model import BaseModel, Base
+
 
 class Review(BaseModel, Base):
     """

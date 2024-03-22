@@ -1,11 +1,11 @@
 # Script that configures Nginx servers with puppet
 
-exec {'update':
+exec { 'update':
   provider => shell,
   command  => 'sudo apt-get -y update',
 } ->
 
-exec {'install Nginx':
+exec { 'install Nginx':
   provider => shell,
   command  => 'sudo apt-get -y install nginx',
 } ->
@@ -62,13 +62,15 @@ file { '/var/www/html/404.html':
   content => "Ceci n'est pas une page"
 } ->
 
-exec {'add location block':
+exec { 'add location block':
   onlyif   => 'test -f /etc/nginx/sites-available/default',
   provider => shell,
-  command  => 'sudo sed -i \'41i\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n\t}\n\' /etc/nginx/sites-available/default',
+  command  =>
+    'sudo sed -i \'41i\\tlocation /hbnb_static/ {\n\t\talias /data/web_static/current/;\n\t\tautoindex off;\n\t}\n\' /etc/nginx/sites-available/default'
+  ,
 } ->
 
-exec {'restart Nginx':
+exec { 'restart Nginx':
   provider => shell,
   command  => 'sudo service nginx restart',
 }

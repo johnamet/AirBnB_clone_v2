@@ -1,8 +1,8 @@
-from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, ForeignKey, Float, Table
 from sqlalchemy.orm import relationship
 
 from models import type_storage
+from models.base_model import BaseModel, Base
 
 place_amenity = Table('place_amenity', Base.metadata,
                       Column('place_id', String(60), ForeignKey('places.id'), nullable=False),
@@ -37,7 +37,7 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, nullable=False, default=0)
     latitude = Column(Float)
     longitude = Column(Float)
-    
+
     # For DBStorage
     reviews = relationship('Review', backref='place',
                            cascade='all, delete-orphan')
