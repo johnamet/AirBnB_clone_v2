@@ -25,21 +25,23 @@ def c_is_fun(text):
     return f'C {escape(text.replace("_", " "))}'
 
 
-@app.route("/python/<text>")
+@app.route("/python/<text>", strict_slashes=False)
 def python_cool(text):
     return f'Python {escape(text.replace("_", " "))}'
 
 
-@app.route("/python")
-@app.route("/python/")
+@app.route("/python", strict_slashes=False)
+@app.route("/python/", strict_slashes=False)
 def default_python_cool():
     default = "is cool"
     return f"Python {default}"
 
 
-@app.route("/number/<n>")
+@app.route("/number/<n>", strict_slashes=False)
 def is_number(n):
-    
+    """
+    route to a number
+    """
     if n.isdigit():
         return f"{escape(n)} is a number"
 
