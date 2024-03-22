@@ -45,8 +45,8 @@ def is_number(n):
     Returns:
         str: if a n is a number
     """
-    if n.isdigit():
-        return f"{n} is a number"
+    
+    return f"{n} is a number"
 
 
 if __name__ == "__main__":
