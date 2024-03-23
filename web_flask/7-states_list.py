@@ -10,7 +10,7 @@ from models import storage, State
 app = Flask(__name__)
 
 
-@app.route('/states_list')
+@app.route('/states_list', strict_slashes=False)
 def states_list():
     states = storage.all(State)
     states_list = [state for _, state in states.items()]
