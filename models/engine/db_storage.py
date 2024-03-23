@@ -37,8 +37,11 @@ class DBStorage:
         )
 
         # Drop all tables if the environment is 'test'
-        if environ['HBNB_ENV'] == 'test':
-            Base.metadata.drop_all(self.__engine)
+        try:
+            if environ['HBNB_ENV'] == 'test':
+                Base.metadata.drop_all(self.__engine)
+        except KeyError as e:
+            pass
 
     def all(self, cls=None):
         """
