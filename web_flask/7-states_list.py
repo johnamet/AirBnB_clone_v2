@@ -1,4 +1,9 @@
 #!/usr/bin/python3
+"""
+The script displays a list of states
+"""
+
+
 from flask import Flask, render_template
 from models import storage, State
 
