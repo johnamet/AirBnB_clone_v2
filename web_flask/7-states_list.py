@@ -3,7 +3,6 @@
 The script displays a list of states
 """
 
-
 from flask import Flask, render_template
 from models import storage, State
 
@@ -15,6 +14,14 @@ def states_list():
     states = storage.all(State)
     states_list = [state for _, state in states.items()]
     return render_template('7-states_list.html', states=states_list)
+
+
+@app.teardown_appcontext
+def close_db(exception=None):
+    """
+    After each request remove the current SQLAlchemy Session:
+    """
+    storage.close()
 
 
 if __name__ == '__main__':
